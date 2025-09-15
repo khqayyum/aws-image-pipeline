@@ -89,7 +89,7 @@ For **image-api**:
 
 ## Manual test flow
 
-1. **Upload an image** to `s3://<bucket>/raw/ss.png`.
+1. **Upload an image** to `s3://kaq-image-pipeline-project/raw/ss.png`.
 2. Lambda `image-processor` runs → writes:
    - `public/thumbs/ss.png`
    - `public/optimized/ss.png`
