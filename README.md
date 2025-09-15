@@ -14,7 +14,36 @@ It also has monitoring with CloudWatch and error notifications via SNS.
 - **CloudFront** → CDN for caching and fast global delivery.  
 - **SNS + CloudWatch** → Alerts when errors occur.  
 
-(Insert architecture diagram here)
+flowchart LR
+    subgraph Upload_Path["Upload & Processing"]
+        U[User/Client] -- "PUT object\ns3://kaq-image-pipeline-project/raw/<file>" --> S3raw[(S3 Bucket\nraw/)]
+        S3raw -- "S3 Event" --> Lproc[Lambda: image-processor]
+        Lproc -->|Resize + write| S3pub[(S3 Bucket\npublic/thumbs & public/optimized)]
+        Lproc -->|Write metadata| DDB[(DynamoDB\nImageMetadata)]
+        Lproc -. "Errors/Logs" .-> CW[(CloudWatch Logs & Metrics)]
+        CW -. "Alarm: Errors > 0" .-> SNS[(SNS Topic: image-pipeline-alerts)]
+        SNS -. "Email Notification" .-> Mail[Your Email]
+    end
+
+    subgraph Read_API["Read API"]
+        APIGW[API Gateway\nHTTP API] -- "GET /images\nGET /images/{id}" --> Lapi[Lambda: image-api]
+        Lapi -->|Query| DDB
+    end
+
+    subgraph CDN_Path["Delivery"]
+        CF[CloudFront\nDistribution] -- "GET /thumbs/<file>\nGET /optimized/<file>" --> S3pub
+        Viewer[Browser/User] --> APIGW
+        Viewer --> CF
+    end
+
+    classDef store fill:#eef,stroke:#6a8,stroke-width:1px,color:#111;
+    classDef lambda fill:#ffe9cc,stroke:#d59a3b,color:#111;
+    classDef service fill:#e8f4ff,stroke:#4b89dc,color:#111;
+
+    class S3raw,S3pub,DDB store;
+    class Lproc,Lapi lambda;
+    class APIGW,CF,CW,SNS service;
+
 
 ## Services Used
 - Amazon S3  
