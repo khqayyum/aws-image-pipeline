@@ -26,7 +26,7 @@ It also has monitoring with CloudWatch and error notifications via SNS.
 - Amazon CloudWatch  
 
 ## Screenshots
-(Add screenshots of console, logs, CloudFront test, alarms, etc.)
+- Check Screenshot Folder
 
 ## How to Use
 1. Upload an image (PNG/JPG) to the S3 `raw/` folder.  
