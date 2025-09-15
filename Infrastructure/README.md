@@ -94,4 +94,41 @@ For **image-api**:
    - `public/thumbs/ss.png`
    - `public/optimized/ss.png`
    - DynamoDB item (`imageId = ss.png`)
-3. **List API**:  
+3. **List API**:
+   - GET https://juib1bkup0.execute-api.us-east-1.amazonaws.com/images
+4. **Single item**:
+   - GET https://juib1bkup0.execute-api.us-east-1.amazonaws.com/images?id=ss.png
+5. **CDN URLs**:
+   - https://d2yza94f7e6d7q.cloudfront.net/thumbs/ss.png
+   - https://d2yza94f7e6d7q.cloudfront.net/optimized/ss.png
+     
+---
+
+## Error/Alert demo (non-image)
+
+1. Upload a **PDF** to `raw/`:  
+`s3://kaq-image-pipeline-project/raw/file.pdf`
+2. `image-processor` throws `"Unsupported MIME type: application/pdf"`.
+3. CloudWatch metric **Errors** increments → Alarm fires → SNS sends email.
+
+---
+
+## Notes & costs
+
+- All components are within **AWS Free Tier** if lightly used:
+- Lambda/ApiGateway/DynamoDB/SNS/CloudWatch have free tiers with small monthly quotas.
+- **CloudFront** has a generous Free Tier (1 TB/50M req in first year). After free tier, standard CDN rates apply.
+- To stay free, avoid large/bulk uploads and high traffic.
+  
+---
+
+## Future improvements
+
+- IaC (SAM/Serverless/Terraform) templates
+- AuthN/AuthZ on API Gateway
+- Signed CloudFront URLs or OAC for origin access
+- Virus scanning / content moderation hook
+- More image variants & formats (webp/avif)
+
+
+
