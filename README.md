@@ -15,6 +15,7 @@ It also has monitoring with CloudWatch and error notifications via SNS.
 - **SNS + CloudWatch** → Alerts when errors occur.  
 
 flowchart LR
+```mermaid
     subgraph Upload_Path["Upload & Processing"]
         U[User/Client] -- "PUT object\ns3://kaq-image-pipeline-project/raw/<file>" --> S3raw[(S3 Bucket\nraw/)]
         S3raw -- "S3 Event" --> Lproc[Lambda: image-processor]
@@ -43,6 +44,7 @@ flowchart LR
     class S3raw,S3pub,DDB store;
     class Lproc,Lapi lambda;
     class APIGW,CF,CW,SNS service;
+```
 
 
 ## Services Used
