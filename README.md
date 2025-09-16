@@ -24,7 +24,7 @@ flowchart LR
     Lproc -->|Write metadata| DDB[(DynamoDB<br/>ImageMetadata)]
     Lproc -. "Errors/Logs" .-> CW[(CloudWatch Logs & Metrics)]
     CW -. "Alarm: Errors > 0" .-> SNS[(SNS Topic: image-pipeline-alerts)]
-    SNS -. "Email Notification" .-> Mail[Your Email]
+    SNS -. "Email Notification" .-> Mail[abdulqayyumk9586@gmail.com]
   end
 
   %% -------- Read API --------
