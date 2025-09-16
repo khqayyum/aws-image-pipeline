@@ -62,7 +62,20 @@ flowchart LR
 - Amazon CloudWatch  
 
 ## Screenshots
-- Check Screenshot Folder
+See Screenshot Folder for:
+1. S3/raw
+2. S3/public/optimized
+3. S3/public/thumbs
+4. Lambda/image-processor
+5. Lambda/image-api
+6. DynamoDB
+7. API-list
+8. API-Single item
+9. CloudFront
+10. CloudWatch Alarm
+11. SNS Email
+12. Architecture
+    
 
 ## How to Use
 1. Upload an image (PNG/JPG) to the S3 `raw/` folder.  
