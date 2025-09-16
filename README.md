@@ -17,7 +17,7 @@ It also has monitoring with CloudWatch and error notifications via SNS.
 ```mermaid
 flowchart LR
     subgraph Upload_Path["Upload & Processing"]
-        U[User/Client] -- "PUT object\ns3://kaq-image-pipeline-project/raw/<file>" --> S3raw[(S3 Bucket\nraw/)]
+        U[User/Client] -- "PUT object<br>s3://kaq-image-pipeline-project/raw/<file>" --> S3raw[(S3 Bucket\nraw/)]
         S3raw -- "S3 Event" --> Lproc[Lambda: image-processor]
         Lproc -->|Resize + write| S3pub[(S3 Bucket\npublic/thumbs & public/optimized)]
         Lproc -->|Write metadata| DDB[(DynamoDB\nImageMetadata)]
