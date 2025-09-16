@@ -16,34 +16,39 @@ It also has monitoring with CloudWatch and error notifications via SNS.
 
 ```mermaid
 flowchart LR
-    subgraph Upload_Path["Upload & Processing"]
-        U[User/Client] -- "PUT object<br>s3://kaq-image-pipeline-project/raw/<file>" --> S3raw[(S3 Bucket\nraw/)]
-        S3raw -- "S3 Event" --> Lproc[Lambda: image-processor]
-        Lproc -->|Resize + write| S3pub[(S3 Bucket\npublic/thumbs & public/optimized)]
-        Lproc -->|Write metadata| DDB[(DynamoDB\nImageMetadata)]
-        Lproc -. "Errors/Logs" .-> CW[(CloudWatch Logs & Metrics)]
-        CW -. "Alarm: Errors > 0" .-> SNS[(SNS Topic: image-pipeline-alerts)]
-        SNS -. "Email Notification" .-> Mail[Your Email]
-    end
+  %% -------- Upload & Processing --------
+  subgraph Upload_Path["Upload & Processing"]
+    U[User/Client] -- "PUT object<br/>s3://kaq-image-pipeline-project/raw/<file>" --> S3raw[(S3 Bucket<br/>raw/)]
+    S3raw -- "S3 Event" --> Lproc[Lambda: image-processor]
+    Lproc -->|Resize + write| S3pub[(S3 Bucket<br/>public/thumbs & public/optimized)]
+    Lproc -->|Write metadata| DDB[(DynamoDB<br/>ImageMetadata)]
+    Lproc -. "Errors/Logs" .-> CW[(CloudWatch Logs & Metrics)]
+    CW -. "Alarm: Errors > 0" .-> SNS[(SNS Topic: image-pipeline-alerts)]
+    SNS -. "Email Notification" .-> Mail[Your Email]
+  end
 
-    subgraph Read_API["Read API"]
-        APIGW[API Gateway\nHTTP API] -- "GET /images\nGET /images/{id}" --> Lapi[Lambda: image-api]
-        Lapi -->|Query| DDB
-    end
+  %% -------- Read API --------
+  subgraph Read_API["Read API"]
+    APIGW[API Gateway<br/>HTTP API] -- "GET /images<br/>GET /images/{id}" --> Lapi[Lambda: image-api]
+    Lapi -->|Query| DDB
+  end
 
-    subgraph CDN_Path["Delivery"]
-        CF[CloudFront\nDistribution] -- "GET /thumbs/<file>\nGET /optimized/<file>" --> S3pub
-        Viewer[Browser/User] --> APIGW
-        Viewer --> CF
-    end
+  %% -------- Delivery (CDN) --------
+  subgraph CDN_Path["Delivery"]
+    CF[CloudFront<br/>Distribution] -- "GET /thumbs/<file><br/>GET /optimized/<file>" --> S3pub
+    Viewer[Browser/User] --> APIGW
+    Viewer --> CF
+  end
 
-    classDef store fill:#eef,stroke:#6a8,stroke-width:1px,color:#111;
-    classDef lambda fill:#ffe9cc,stroke:#d59a3b,color:#111;
-    classDef service fill:#e8f4ff,stroke:#4b89dc,color:#111;
+  %% Styles
+  classDef store fill:#eef,stroke:#6a8,stroke-width:1px,color:#111;
+  classDef lambda fill:#ffe9cc,stroke:#d59a3b,color:#111;
+  classDef service fill:#e8f4ff,stroke:#4b89dc,color:#111;
 
-    class S3raw,S3pub,DDB store;
-    class Lproc,Lapi lambda;
-    class APIGW,CF,CW,SNS service;
+  class S3raw,S3pub,DDB store;
+  class Lproc,Lapi lambda;
+  class APIGW,CF,CW,SNS service;
+
 ```
 
 
