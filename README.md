@@ -60,7 +60,6 @@ flowchart LR
 - Amazon CloudFront  
 - Amazon SNS  
 - Amazon CloudWatch  
-- AWS CodeDeploy
 
 ## Screenshots
 See Screenshot Folder for:
