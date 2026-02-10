@@ -50,6 +50,7 @@ flowchart LR
   class APIGW,CF,CW,SNS service;
 
 ```
+```mermaid
 flowchart TB
   subgraph Clients
     UA[User A (App / Mobile / Web)]
@@ -137,7 +138,7 @@ flowchart TB
     ProbeOrch
     Mediator
   end
-
+```
 
 ## Services Used
 - Amazon S3  
