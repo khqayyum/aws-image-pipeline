@@ -50,95 +50,33 @@ flowchart LR
   class APIGW,CF,CW,SNS service;
 
 ```
-```mermaid
 flowchart TB
   subgraph Clients
-    UA[User A (App / Mobile / Web)]
-    UB[User B (App / Mobile / Web)]
+    UA["User A (App / Mobile / Web)"]
+    UB["User B (App / Mobile / Web)"]
   end
 
   subgraph Frontend["Frontend / Gateway"]
-    FE[API Gateway / Websockets]
-    Auth[Auth & Consent Service]
+    FE["API Gateway / Websockets"]
+    Auth["Auth & Consent Service"]
   end
 
   subgraph Chatbots["Chatbot Layer"]
-    BotSvc[Chatbot Service (per-user agent)]
+    BotSvc["Chatbot Service (per-user agent)"]
   end
 
   subgraph DataPlane["Data Plane (Encrypted)"]
-    Conv[Conversation Store (S3 / object store)]
-    Feature[Feature Extraction / NLP Pipeline]
-    Vector[Vector DB (Pinecone / Milvus / FAISS)]
-    Profiles[Profile DB (Postgres)]
+    Conv["Conversation Store (S3 / object store)"]
+    Feature["Feature Extraction / NLP Pipeline"]
+    Vector["Vector DB (Pinecone / Milvus / FAISS)"]
+    Profiles["Profile DB (Postgres)"]
   end
 
   subgraph Matching["Matching & Mediation"]
-    MatchEngine[Matching Engine (ANN + Ranker)]
-    Mediator[Compatibility Mediator Agent]
-    ProbeBank[Probe Template Bank]
-    ProbeOrch[Probe Orchestrator / Queue]
-    DecisionSvc[Decision & Scoring Service]
-  end
+    MatchEngine["Matching Engine (ANN + Ranker)"]
+    Mediator["Compatibility Mediator Agent"]
+    Probe
 
-  subgraph Interaction["User Interaction"]
-    Notif[Notification Service]
-    UIChat[Direct / Mediated Chat Service]
-  end
-
-  subgraph Ops["Ops & Security"]
-    Audit[Audit & Consent Logs (immutable)]
-    IAM[KMS / Secrets / RBAC]
-    Observ[Monitoring & Tracing]
-  end
-
-  %% Connections
-  UA -->|chat messages| FE
-  UB -->|chat messages| FE
-
-  FE --> Auth
-  FE --> BotSvc
-  BotSvc --> Conv
-  Conv --> Feature
-  Feature --> Vector
-  Feature --> Profiles
-
-  Vector --> MatchEngine
-  Profiles --> MatchEngine
-  MatchEngine --> Mediator
-  Mediator --> ProbeOrch
-  ProbeOrch --> ProbeBank
-  ProbeOrch --> BotSvc
-  BotSvc -->|aggregated response| ProbeOrch
-  ProbeOrch --> Mediator
-  Mediator --> DecisionSvc
-  DecisionSvc --> MatchEngine
-  DecisionSvc --> Notif
-  Notif --> UA
-  Notif --> UB
-  Notif --> UIChat
-  UA -->|open chat| UIChat
-  UB -->|open chat| UIChat
-
-  %% Ops links
-  Conv -->|audit write| Audit
-  ProbeOrch -->|audit write| Audit
-  Auth -->|consent record| Audit
-  IAM --> Conv
-  IAM --> Profiles
-  Observ --> BotSvc
-  Observ --> Mediator
-
-  %% Privacy boundary
-  classDef boundary stroke-dasharray: 5 5,stroke:#666,stroke-width:2px;
-  subgraph "PRIVACY BOUNDARY — Only aggregated labels & encrypted vectors cross" style boundary
-    Feature
-    Vector
-    Profiles
-    ProbeOrch
-    Mediator
-  end
-```
 
 ## Services Used
 - Amazon S3  
